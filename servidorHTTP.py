@@ -31,12 +31,29 @@ while True:
     #client_address: tupla (IP do cliente, Porta do cliente)
     client_connection, client_address = server_socket.accept()
 
+    data = b''
+    
+    client_connection.settimeout(0.1)
+
+    while True:
+        try:
+            packet = client_connection.recv(1024)
+            if not packet:
+                break
+            data += packet
+        except socket.timeout:
+            break
+
     #pega a solicitação do cliente
-    request = client_connection.recv(1024).decode()
+    request = data.decode()
     #verifica se a request possui algum conteúdo (pois alguns navegadores ficam periodicamente enviando alguma string vazia)
     if request:
         #imprime a solicitação do cliente
         print(request)
+
+        # print("\n SEM DECODE:" )
+        # print(client_connection.recv(1024))
+        # print(" \n")
         
         #analisa a solicitação HTTP
         headers = request.split("\n")
@@ -82,6 +99,7 @@ while True:
         elif requestType == "PUT":
 
             body = request[request.find("\r\n\r\n"):]
+
 
             try:
                 # pega o nome do arquivo
