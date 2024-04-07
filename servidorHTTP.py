@@ -113,7 +113,7 @@ while True:
                 newFile.close()
 
                 # responde 201
-                response = f"HTTP/1.1 201 Created\n\n<h1>201 CREATED!<br>File Created!</h1> <p>Here's a link to your new file <a href='{filename}.html'>newFile</a></p>"
+                response = f"HTTP/1.1 201 Created\n\n<h1>201 CREATED!<br>File Created!</h1> <p>Here's a link to your new file <a href='http://localhost:{SERVER_PORT}/{filename}'>newFile</a></p>"
 
 
             except Exception as e:
