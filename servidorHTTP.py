@@ -51,25 +51,21 @@ while True:
         #imprime a solicitação do cliente
         print(request)
 
-        # print("\n SEM DECODE:" )
-        # print(client_connection.recv(1024))
-        # print(" \n")
-        
+
         #analisa a solicitação HTTP
         headers = request.split("\n")
         print("headers ----> ",headers[0])
         #print(headers)#impressão dos cabeçalhos
-        #pega o nome do arquivo sendo solicitado
-        
+
+        #pega o nome do arquivo sendo solicitado        
         filename = headers[0].split()[1]
-        # print("filename---> ", filename)
+        # print("filename ----> ", filename)
         
-        # print("\n\n")
         
         requestType = headers[0].split()[0]
-        # print("requestType ---> ", requestType)
+        # print("requestType ----> ", requestType)
         # body = request[request.find("\r\n\r\n"):]
-        # print("bodyy ->> ",body)
+        # print("bodyy --->> ",body)
 
 
         # print("\n\n")
@@ -84,7 +80,8 @@ while True:
 
             #try e except para tratamento de erro quando um arquivo solicitado não existir
             try:
-
+                
+                # verifica se é imagem
                 if filename.endswith(('.png', '.jpg')):
                     openarq = 'rb'
                 else:
@@ -93,7 +90,7 @@ while True:
                 fin = open("htdocs" + filename, openarq)
                 content = fin.read()
 
-                # define o cabeçalho Content-Type para imagens
+                # altera o cabeçalho para imagens
                 if openarq == 'rb':
                     if filename.endswith(".png"):
                         content_type = "image/png"  
@@ -106,6 +103,7 @@ while True:
             except FileNotFoundError:
                 # caso o arquivo solicitado não exista no servidor, gera uma resposta de erro
                 response = "HTTP/1.1 404 NOT FOUND\n\n<h1>ERROR 404!<br>File Not Found!</h1>"
+        
         elif requestType == "PUT":
 
             body = request[request.find("\r\n\r\n"):]
