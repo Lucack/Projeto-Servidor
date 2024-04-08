@@ -98,7 +98,7 @@ while True:
                     if filename.endswith(".png"):
                         content_type = "image/png"  
                     else:
-                        "image/jpeg"
+                        content_type = "image/jpeg"
                     response = f"HTTP/1.1 200 OK\nContent-Type: {content_type}\n\n".encode() + content
                 else:
                     response = "HTTP/1.1 200 OK\n\n" + content
@@ -137,7 +137,7 @@ while True:
 
         #envia a resposta HTTP
 
-        if filename.endswith('.jpeg') or filename.endswith('.jpg') : # se for imagem
+        if filename.endswith('.jpeg') or filename.endswith('.jpg') or filename.endswith('.png'):
                     
             client_connection.sendall(response)
         else:
