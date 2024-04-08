@@ -78,24 +78,34 @@ while True:
         #verifica o tipo de requisicao do usuario
         if requestType == "GET":
 
-        #verifica qual arquivo está sendo solicitado e envia a resposta para o cliente
+            #verifica qual arquivo está sendo solicitado e envia a resposta para o cliente
             if filename == "/":
                 filename = "/index.html"
 
             #try e except para tratamento de erro quando um arquivo solicitado não existir
             try:
-                #abrir o arquivo e enviar para o cliente
-                fin = open("htdocs" + filename)
-                #leio o conteúdo do arquivo para uma variável
-                content = fin.read()
-                #fecho o arquivo
-                fin.close()
-                #envia a resposta
-                response = "HTTP/1.1 200 OK\n\n" + content
-            except FileNotFoundError:
-                #caso o arquivo solicitado não exista no servidor, gera uma resposta de erro
-                response = "HTTP/1.1 404 NOT FOUND\n\n<h1>ERROR 404!<br>File Not Found!</h1>"
 
+                if filename.endswith(('.png', '.jpg')):
+                    openarq = 'rb'
+                else:
+                    openarq = 'r'
+
+                fin = open("htdocs" + filename, openarq)
+                content = fin.read()
+
+                # define o cabeçalho Content-Type para imagens
+                if openarq == 'rb':
+                    if filename.endswith(".png"):
+                        content_type = "image/png"  
+                    else:
+                        "image/jpeg"
+                    response = f"HTTP/1.1 200 OK\nContent-Type: {content_type}\n\n".encode() + content
+                else:
+                    response = "HTTP/1.1 200 OK\n\n" + content
+
+            except FileNotFoundError:
+                # caso o arquivo solicitado não exista no servidor, gera uma resposta de erro
+                response = "HTTP/1.1 404 NOT FOUND\n\n<h1>ERROR 404!<br>File Not Found!</h1>"
         elif requestType == "PUT":
 
             body = request[request.find("\r\n\r\n"):]
@@ -126,7 +136,12 @@ while True:
             response = "HTTP/1.1 405 Method Not Allowed\n\n<h1>NOT ALLOWED METHOD 405!<br>Method Not Allowed For This Server!</h1>"
 
         #envia a resposta HTTP
-        client_connection.sendall(response.encode())
+
+        if filename.endswith('.jpeg') or filename.endswith('.jpg') : # se for imagem
+                    
+            client_connection.sendall(response)
+        else:
+            client_connection.sendall(response.encode())
 
         client_connection.close()
 
